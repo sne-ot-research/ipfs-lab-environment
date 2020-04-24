@@ -8,7 +8,11 @@ The source of the modified version can be found [here](https://github.com/dadepo
 
 ### Starting up the IPFS network
 
-Clone, or copy the content of this `docker-compose.yml` file. Then run
+Clone, or copy the content of this `docker-compose.yml` file. 
+
+Create a directory at `/tmp/ipfs/nexus`, this is used as volume to share content across the containers.
+
+Then run
 
 `docker-compose up` or `docker-compose up -d` to start the processes in the background.
 
