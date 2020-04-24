@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  bootnode:
+    container_name: bootnode
+    image: dadepo/ipfs-private:latest
+    volumes:
+         - /tmp/ipfs/nexus:/usr/local/nexus
+    environment:
+          - IS_BOOTNODE=true
+    expose:
+         - 8080
+    ports:
+         - 8080:8080        
+    networks:
+         private_net:
+            ipv4_address: "192.168.1.100"
+  node1:
+    depends_on: 
+        - bootnode    
+    container_name: node1
+    image: dadepo/ipfs-private:latest
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+       - 8080
+    ports:
+         - 8081:8080
+    networks:
+       private_net:
+           ipv4_address: "192.168.1.101"
+
+  node2:
+    depends_on:
+        - bootnode
+    container_name: node2
+    image: dadepo/ipfs-private:latest
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+        - 8080
+    ports:
+        - 8082:8080
+    networks:
+       private_net:
+           ipv4_address: "192.168.1.102"
+
+networks:
+  private_net:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.1.0/24
