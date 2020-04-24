@@ -51,6 +51,7 @@ added QmYWAifyw2V5dEq7c5GgdSPffeKoYXQZggnYzw5RbXpig4 file1.txt
 Then go to another node, and confirm you can retrieve the file added in the fist node using the hash. For exampple on node1:
 
 ```
+ipfs get QmYWAifyw2V5dEq7c5GgdSPffeKoYXQZggnYzw5RbXpig4
 / # cat QmYWAifyw2V5dEq7c5GgdSPffeKoYXQZggnYzw5RbXpig4
 Hello IPFS!
 ```
