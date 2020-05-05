@@ -1,6 +1,8 @@
 version: "3.7"
 services:
   bootnode:
+    depends_on:
+         - tcpdump
     container_name: bootnode
     image: dadepo/ipfs-private:latest
     volumes:
@@ -10,7 +12,8 @@ services:
     expose:
          - 8080
     ports:
-         - 8080:8080        
+         - 8080:8080
+         - 5000:5001      
     networks:
          private_net:
             ipv4_address: "192.168.1.100"
@@ -25,6 +28,7 @@ services:
        - 8080
     ports:
          - 8081:8080
+         - 5001:5001
     networks:
        private_net:
            ipv4_address: "192.168.1.101"
@@ -40,9 +44,19 @@ services:
         - 8080
     ports:
         - 8082:8080
+        - 5002:5001
     networks:
        private_net:
            ipv4_address: "192.168.1.102"
+
+  tcpdump:
+   container_name: tcpdump
+   image: corfr/tcpdump:latest
+   volumes:
+      - /tmp/ipfs/nexus/tcpdump:/data
+   networks:
+      private_net:
+         ipv4_address: "192.168.1.103"
 
 networks:
   private_net:
