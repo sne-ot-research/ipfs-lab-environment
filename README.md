@@ -84,3 +84,17 @@ To add nodes to the network, edit the docker-compose.yml:
         private_net:
              ipv4_address: "192.168.1.10N" <-- change IP address
  ```
+
+## Attack Scenarios
+-
+
+### Exploiting insecure COS configuration
+
+After starting the containers, access `QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm` from the gateway of any of the nodes. For example:
+
+```
+http://localhost:8081/ipfs/QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm
+```
+
+The QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm is a malicious html page added by the `mal_node4` node which exploits `open_config_node3` node which has an insecure COS configuration
+

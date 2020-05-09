@@ -11,6 +11,7 @@ services:
           - IS_BOOTNODE=true
     expose:
          - 8080
+         - 5001
     ports:
          - 8080:8080
          - 5000:5001      
@@ -26,6 +27,7 @@ services:
         - /tmp/ipfs/nexus:/usr/local/nexus/
     expose:
        - 8080
+       - 5001
     ports:
          - 8081:8080
          - 5001:5001
@@ -42,12 +44,54 @@ services:
         - /tmp/ipfs/nexus:/usr/local/nexus/
     expose:
         - 8080
+        - 5001
     ports:
         - 8082:8080
         - 5002:5001
     networks:
        private_net:
            ipv4_address: "192.168.1.102"
+
+  open_config_node3:
+    depends_on:
+        - bootnode
+    container_name: open_config_node3
+    image: dadepo/ipfs-private:latest
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+        - 8080
+        - 5001
+    ports:
+        - 8083:8080
+        - 5003:5001
+    command: 
+        - /bin/sh 
+        - -c 
+        - |
+          ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
+          ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
+          ipfs daemon --migrate=true
+    networks:
+       private_net:
+           ipv4_address: "192.168.1.103"
+
+  mal_node4:
+    depends_on:
+        - bootnode
+    container_name: mal_node4
+    image: dadepo/ipfs-mal
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+        - 8080
+        - 5001
+    ports:
+        - 8084:8080
+        - 5004:5001
+    networks:
+       private_net:
+           ipv4_address: "192.168.1.104"
 
   tcpdump:
    container_name: tcpdump
@@ -56,7 +100,7 @@ services:
       - /tmp/ipfs/nexus/tcpdump:/data
    networks:
       private_net:
-         ipv4_address: "192.168.1.103"
+         ipv4_address: "192.168.1.200"
 
 networks:
   private_net:
