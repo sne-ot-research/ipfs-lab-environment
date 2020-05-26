@@ -96,7 +96,7 @@ services:
         - -c
         - |
            ipfs add -r /public
-           ipfs daemon 2> /tmp/error
+           ipfs daemon 2> /tmp/stderr
     networks:
        private_net:
            ipv4_address: "192.168.1.104"
