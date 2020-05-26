@@ -89,10 +89,18 @@ services:
     ports:
         - 8084:8080
         - 5004:5001
+    environment:
+        - IPFS_LOGGING_FMT=json
+    command:
+        - /bin/sh
+        - -c
+        - |
+           ipfs add -r /public
+           ipfs daemon 2> /tmp/error
     networks:
        private_net:
            ipv4_address: "192.168.1.104"
-
+  
   tcpdump:
    container_name: tcpdump
    image: corfr/tcpdump:latest
