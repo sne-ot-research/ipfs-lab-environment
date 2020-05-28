@@ -100,6 +100,52 @@ services:
     networks:
        private_net:
            ipv4_address: "192.168.1.104"
+
+
+  pubsub_1_node5:
+    depends_on:
+        - bootnode
+    container_name: pubsub_1_node5
+    image: dadepo/ipfs-private:latest
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+        - 8080
+        - 5001
+    ports:
+        - 8085:8080
+        - 5005:5001
+    command: 
+        - /bin/sh 
+        - -c 
+        - |
+          ipfs daemon --enable-pubsub-experiment 2> /tmp/stderr && ipfs log pubsub debug
+    networks:
+        private_net:
+            ipv4_address: "192.168.1.105"
+
+
+  pubsub_1_node6:
+    depends_on:
+        - bootnode
+    container_name: pubsub_1_node6
+    image: dadepo/ipfs-private:latest
+    volumes:
+        - /tmp/ipfs/nexus:/usr/local/nexus/
+    expose:
+        - 8080
+        - 5001
+    ports:
+        - 8086:8080
+        - 5006:5001
+    command: 
+        - /bin/sh 
+        - -c 
+        - |
+          ipfs daemon --enable-pubsub-experiment 2> /tmp/stderr && ipfs log pubsub debug
+    networks:
+        private_net:
+            ipv4_address: "192.168.1.106"
   
   tcpdump:
    container_name: tcpdump
