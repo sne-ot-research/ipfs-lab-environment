@@ -12,10 +12,11 @@ Clone, or copy the content of this `docker-compose.yml` file.
 
 Create a directory at `/tmp/ipfs/nexus`, this is used as volume to share content across the containers.
 
+:exclamation:
 **NOTE: Ideally the docker container should take care of creating this directory, but for some reason I have not investigated yet, this did not happen on the server. I had to create it and give it a permission of 777.
 TODO: Investigate this and resolve
 **
-
+:exclamation:
 
 Then run
 
