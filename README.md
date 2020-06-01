@@ -86,16 +86,123 @@ To add nodes to the network, edit the docker-compose.yml:
              ipv4_address: "192.168.1.10N" <-- change IP address
  ```
 
-## Attack Scenarios
+## Experiment Scenarios
 -
 
-### Exploiting insecure COS configuration
+### Testing blacklist functionality
 
-After starting the containers, access `QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm` from the gateway of any of the nodes. For example:
+#### On adding content
 
-```
-http://localhost:8081/ipfs/QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm
-```
+1.  Start services defined in docker compose by running: 
+   `docker-compose up` in a terminal.
 
-The QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm is a malicious html page added by the `mal_node4` node which exploits `open_config_node3` node which has an insecure COS configuration
+2.  In another terminal, enter into any of the containers. In this
+    instruction, we use `node1`. Do this by running `docker exec -it
+    node1 /bin/sh`
+
+3.  Check that `blacklist` and `virus.jpg` file exist in the root directory
+
+4.  Now attempt to add `virus.jpg` by running `ipfs add virus.jpg`
+
+5.  You should see an error saying content is potentially malicious
+
+
+#### On requesting content
+
+1.  Start services defined in docker compose by running `docker-compose
+    up` in a terminal.
+
+2.  Enter into any of the containers. In this instruction, we use
+    `node1`. Do this by running `docker exec -it node1 /bin/sh`
+
+3.  Check that `blacklist` and `virus.jpg` file exist in root directory
+
+4.  Edit `/blackist` file and remove the content. This is to allow the
+    addition of `virus.jpg`
+
+5.  Run `ipfs add virus.jpg` to add the `virus.jpg` to IPFS. Note the
+    CID that is outputted.
+
+6.  Exit `node1` and enter `node2` container
+
+7.  Now attempt to fetch the CID gotten from output in previous step by
+    running `ipfs get -CID from previous step-`
+
+8.  Content will not be fetched and you should see an error saying content is potentially malicious
+
+
+### Exploiting CORS for content injection and deletion
+
+#### Injecting content
+
+1.  Start services defined in docker compose by running `docker-compose
+    up` in a terminal.
+
+2.  In another terminal, enter into `open\_config\_node3` by running
+    `docker exec -it open\_config\_node3 /bin/sh`
+
+3.  Now run `ipfs cat QmSv6nkqA5ghKeQNoVxUZgnVhaRbirPDZgF5Qyf2RvMDtV`.
+    Confirm that this command does not return. This shows no content with
+    CID `QmSv6nkqA5ghKeQNoVxUZgnVhaRbirPDZgF5Qyf2RvMDtV` exist
+
+4.  Now open a browser and access
+    `http://localhost:8083/ipfs/QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm*`
+    The CID *QmPesj1PHfxPah9B5xV28kWbWwLbcFZD3ip3Sszy8uWFpm* is for content added by
+    `mal\_node4` that exploits the CORS configuration of
+    `open\_config\_node3` to add content to it
+
+5.  Now go back to `open\_config\_node3` and run `ipfs cat
+    QmSv6nkqA5ghKeQNoVxUZgnVhaRbirPDZgF5Qyf2RvMDtV` this time the
+    command returns showing that content has been added to it.
+
+
+#### Deleting content
+
+1.  Start services defined in docker compose by running *docker-compose
+    up* in a terminal.
+
+2.  Connect to `mal\_node4` by running `docker exec -it mal\_node4
+    /bin/sh`
+
+3.  Enabling listening to DHT communication by running `ipfs log level
+    dht debug`
+
+4.  In another terminal, now connect to `open\_config\_node3` by running
+    `docker exec -it open\_config\_node3 /bin/sh`
+
+5.  Add content to *open\_config\_node3*. For example:
+   `echo "hello world" \> data.txt && ipfs add data.txt`
+
+6.  Confirm content was added to IPFS by running:
+    `ipfs cat CID\_FROM\_PREVIOUS\_STEP`
+
+7.  Go back to `mal\_node4` and run `peertheripper /tmp/stderr`
+
+8.  Return to `open\_config\_node3`, and confirm that the content that
+    was added has been deleted. Do this by running: 
+    `ipfs cat CID\_FROM\_PREVIOUS\_STEP`. This time around, the command won’t
+    return any content and after a while will timeout
+
+### Viewing Pubsub log entries
+
+1.  Start services defined in docker compose by running: 
+    `docker-compose up` in a terminal.
+
+2.  Connect to `pubsub\_1\_node5` by running `docker exec -it
+    pubsub\_1\_node5 /bin/sh`
+
+3.  Connect to `pubsub\_1\_node5` from another terminal in other to tail
+    the log. Once connected to `pubsub\_1\_node5`, run `tail -f
+    /tmp/stderr`
+
+4.  Switch log level of pubsub component to debug by running `ipfs log
+    level pubsub debug`
+
+5.  Subscribe to a topic. For instance `pubsub-topic` by running `ipfs
+    pubsub sub pubsub-topic`
+
+6.  Unsubscribe by pressing `Ctr+C`
+
+7.  In the other terminal tailing the logs, there should be entries that
+    shows that the peer joined and left the `pubsub-topic` topic
 
